@@ -1,0 +1,45 @@
+---
+title: "Designing on Precision"
+author: "Patrick Wilson"
+date: "4/17/2019"
+output: pdf_document
+---
+
+```{r}
+x1 <- 11:30
+x2 <- runif(20,5,95)
+x3 <- rbinom(20,1,.5)
+
+b0 <- 17
+b1 <- 0.5
+b2 <- 0.037
+b3 <- -5.2
+sigma <- 1.4
+
+eps <- rnorm(x1,0,sigma)
+y <- b0 + b1*x1  + b2*x2  + b3*x3 + eps
+```
+
+
+```{r}
+  pvalues <- replicate(sims,{
+    
+    eps <- rnorm(x1,0,sigma)
+    y <- b0 + b1*x1  + b2*x2  + b3*x3 + eps
+    
+    data <- data.frame(y, time, cluster, linpred, prob , b.trt1 , treatment1 , b.trt2 , treatment2)
+    model <-glmer(y~ treatment1 + treatment2 , data = data, family = binomial)
+    p.value <- summary(model)$coefficients[,4]
+  })
+  
+  signficant.experiment <- matrix(data=NA, nrow=6, ncol=sims) 
+  for (i in 1:6){
+    signficant.experiment[i,] <- (pvalues[i,] <= alpha)
+  } 
+  power <-rowMeans(signficant.experiment)
+  power
+}
+
+```
+
+

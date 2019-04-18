@@ -1,0 +1,46 @@
+---
+title: "Simple Monte Carlo"
+author: "Patrick Wilson"
+date: "4/17/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##
+
+$$t = \frac{\overline{X}-\mu_0}{\hat{\sigma}/\sqrt{n}} $$ 
+
+##Set your parameters
+You will likely build a function for this but let's keep it simple
+```{r}
+n <- 25      # sample size
+mu <- 7.5  # true mean
+sigma <- 15  # true SD
+mu0 <- 0   # mean under the null hypothesis
+
+reps <- 100000  # number of simulations
+
+## p-value approach:
+
+pvalues <- numeric(reps)
+```
+
+
+```{r}
+set.seed(04192019)
+
+for (i in 1:reps) {
+  x <- rnorm(n, mu, sigma)
+  t.stat <- (mean(x) - mu0)/(sd(x)/sqrt(n))
+  pvalues[i] <- t.test(x, mu = mu0)$p.value
+}
+```
+
+
+
+```{r}
+mean(pvalues < 0.05)
+```
