@@ -7,11 +7,11 @@ output: pdf_document
 
 # Power a logistic regression model for Observational research
 
-When designing an observational study many times a sample size will need to be decided. You may have the ability to delay a study for greater accrual of study subjects or you may have a cost function like chart abstraction that you need to optimize.
+When designing an observational study many times a sample size will need to be planned for. You may have the ability to delay for greater accrual of study subjects or you may have a cost function like chart abstraction that you need to optimize.
 
 Observational models tend to be more complex than trial models. Usually this is due to the need to adjust for confounding.
 
-Here is an toy example on how one would power a design for and exposure outcome relationship where there is a suspected confounder called "Age"
+Here is an toy example on how one would power a design for an exposure/outcome relationship where there is a suspected confounder called "Age".
 
 
 $$P(\text{Disease} = 1) = \frac{\text{exp}(\beta_0 + \beta_1 \text{Exposure} + \beta_2 \text{Age})}{1 + \text{exp}(\beta_0 + \beta_1\text{Exposure} + \beta_2 \text{Age})} $$
@@ -76,7 +76,7 @@ signficant.experiment <- matrix(data=NA, nrow=3, ncol=sims)
 
 
 
-##Caveats 
+# Caveats 
 
-There is a lot to be desired with this quick example. In this simple example there is no demonstration of how to gauge the impact of a confounder and the subsequent impact on power. Furthermore in designing a study you would need to be able to have realistic scenarios. Future directions would involve building several different types of confounders common in the literature.
+There is a lot to be desired with this quick example. In this simple example there is no demonstration of how to gauge the magnitude of a confounder in an intuitive way and the subsequent impact on power. Furthermore in designing a study you would need to be able to have realistic scenarios informed by the science.
 

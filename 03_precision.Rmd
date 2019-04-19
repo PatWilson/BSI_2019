@@ -9,17 +9,15 @@ output: pdf_document
 ## We Appreciate Power....
 
 
-However power isn't everything. As some researchers are advocating the moving away from straight hypothesis testing and toward more effect estimation, e.g dropping p-values for confidence intervals.
+However power isn't everything. As some researchers are advocating the moving away from straight hypothesis testing and toward more effect estimation, e.g dropping p-values for confidence intervals, power might not be adequate.
 
-To plan on precision a common technique is estimate the width of a confidence interval and see how that varies with sample size
+To plan on precision a common technique is to estimate the width of a confidence interval and see how that varies with sample size and other assumptions.
 
-The framework of Monte Carlo simulation can easily be adapted to designing studies based on precision. Simply the steps with the only difference being that your test is that you run is a confidence interval
+The framework of Monte Carlo simulation can easily be adapted to designing studies based on precision. Simply conduct the same steps with the only difference being that your test is replaced with a confidence interval calculation.
 
-Collect all your confidence intervals and the mean width is your studies precision.
+Collect all your confidence intervals and the mean width of all your simulations is your planned study precision.
 
-Here is a quick example 
-
-
+Here is a quick example: 
 
 ## Design Your Model
 ```{r}
@@ -58,7 +56,8 @@ In this instance create a confidence interval for your estimated effect and take
 ```
 
 
-The mean width of your confidence interval widths
+
+The mean width of your confidence interval of all your simulations is your planned study precision.
 ```{r}
   study_precision <-mean(ci.widths)
   study_precision

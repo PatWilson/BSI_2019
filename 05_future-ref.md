@@ -1,13 +1,13 @@
-#Future Directions and References
+# Future Directions and References
 
 This is just a laundry list of things that I want to build up for Monte Carlo simulations, there is no particular order
 
 1. Testing (how to account for multiple testing?)
 2. More example models: Propensity scores, survival analyses
 3. Time Series analyses: extend AR 1 model to more complicated structures like seasonality
-4. Extend the wedge design to handle more hiearchical structures: Random treatment effect, random time effects
+4. Extend the wedge design to handle more hierarchical structures: Random treatment effect, random time effects
 5. Better understanding of confounding control
-6. More streamlined process in pulling relevent parameter estimates from the literature
+6. More streamlined process in pulling relevant parameter estimates from the literature
 
 
 Here are some references to get you started:

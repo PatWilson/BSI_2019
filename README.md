@@ -1,6 +1,6 @@
 # BSI_2019
-If this is your first time on Github super easy to navigate
-All the code is reproducible and is in a Rmarkdown format. Just click on the PDFs to see in the content in the browser.
+If this is your first time on Github it is super easy to navigate
+All the code is reproducible and is in a Rmarkdown format. Just click on the PDFs in the "View Code" section to see the content. Click on "Open binary file".
 
 Here is the extra content. Thanks for scanning the qr code :) 
 

@@ -33,7 +33,7 @@ reps <- 10000  # number of simulations
 
 ## Simulate Your Model and Record Your Result
 
-There is where the simulation begins. It is a simple loop that creates a distribution of hypothetical differences from a normal model. Then for each draw from the distribution, test to see if you can detect a difference from the null given your signficance level. 
+There is where the simulation begins. It is a simple loop that creates a distribution of hypothetical differences from a normal model. Then for each draw from the distribution, test to see if you can detect a difference from the null given your significance level. 
 ```{r}
 set.seed(04192019)
 
@@ -52,4 +52,4 @@ mean(pvalues < 0.05)
 ```
 
 
-[^1]: As an aside I am simulating a normal model and testing with a t-test. We generally want to match the design with the analyses but sometimes this is not possible or desirable. A good example would be a cox model, with any design choice you would need to simulate a baseline hazard but you may still want the robustness of a cox model. For a sample size of 25 there won't be a big differences between the t and normal.  With larger samples sizes the difference wouldn't be noticeable 
+[^1]: As an aside I am simulating a normal model and testing with a t-test. We generally want to match the design with the analyses but sometimes this is not possible or desirable. A good example would be a cox model, with any design choice you would need to simulate a baseline hazard but you may still want the robustness of a cox model. For a sample size of 25 there won't be a big differences between the t and normal.  With larger samples sizes the difference wouldn't be noticeable.
