@@ -5,65 +5,78 @@ date: "4/17/2019"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+# Power a logistic regression model for Observational research
 
-## R Markdown
+When designing an observational study many times a sample size will need to be decided. You may have the ability to delay a study for greater accrual of study subjects or you may have a cost function like chart abstraction that you need to optimize.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Observational models tend to be more complex than trial models. Usually this is due to the need to adjust for confounding.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Here is an toy example on how one would power a design for and exposure outcome relationship where there is a suspected confounder called "Age"
 
-## Including Plots
 
-You can also embed plots, for example:
+$$P(\text{Disease} = 1) = \frac{\text{exp}(\beta_0 + \beta_1 \text{Exposure} + \beta_2 \text{Age})}{1 + \text{exp}(\beta_0 + \beta_1\text{Exposure} + \beta_2 \text{Age})} $$
+
+
+
+# Design Your Model, Simulate Your Model, and Record Your Result  
 
 ```{r}
 
-wedge_sim_no <- function(I, J, K, beta0, b.trt1, b.trt2, b.time, alpha=0.05, sigma.a, sims=1000){ 
-  
-  #Create three design matrices!!
-  X <-sw.design.mat(6,3)
-  design1 <- rbind(X[4,],X[1,],X[6,],X[6,],X[1,],X[4,])
-  design2 <- rbind(X[6,],X[4,],X[1,],X[4,],X[6,],X[1,])
-  
-  
-  #This creates a vector of patients treatments
-  mu.a <- c(0,0,0,0,0,0)
-  N <- ((J + 1) * K * I)
-  treatment1 <- rep(t(design1), each = K, 1)
-  treatment2 <- rep(t(design2), each = K, 1)
-  #treatment3 <- rep(t(design3), each = K, 1)
-  
-  #This creates a  vector of patient times
-  time <- rep(seq(0, J), each = K, I)
-  
-  
-  #Here is where you will create something that randomly delete some observations
-  
-  pvalues <- replicate(sims,{
-    
-    a <- rnorm(I, mu.a, sigma.a)
-    linpred <- beta0 + b.trt1 * treatment1 + b.age * age
 
-    prob <- exp(linpred)/(1 + exp(linpred))
-    y <- rbinom(N, 1, prob) 
-    
-    data <- data.frame(y, time, cluster, linpred, prob , b.trt1 , treatment1 , b.trt2 , treatment2)
-    model <-glmer(y~ treatment1 + treatment2 , data = data, family = binomial)
-    p.value <- summary(model)$coefficients[,4]
-  })
+sims <- 10000
+alpha <-0.05
+
+
+pvalues <- replicate(sims,{
+
+  #simulate parameter values 
+  N <-300
+  age <- round(runif(N, min = 60, max = 80), digits = 1)
   
-  signficant.experiment <- matrix(data=NA, nrow=6, ncol=sims) 
-  for (i in 1:6){
-    signficant.experiment[i,] <- (pvalues[i,] <= alpha)
-  } 
-  power <-rowMeans(signficant.experiment)
-  power
-}
+  #first simulate your exposure model 
+  base_exposure <- -2.5 
+  beta0 <- -3.0 
+  
+  b.ex.age <- 0.03
+  b.age <- 0.02
+  b.x <- 1
+
+  linpred_exposure <- base_exposure + b.ex.age * age
+  prob_exposure <- exp(linpred_exposure)/(1 + exp(linpred_exposure))
+  exposure <- rbinom(N, 1, prob_exposure)
+
+  #simulate your outcome model
+  linpred <- beta0 + b.x * exposure + b.age * age
+  prob <- exp(linpred)/(1 + exp(linpred))
+  
+  y <- rbinom(N, 1, prob) 
+  
+  data <- data.frame(y, exposure, age)
+  
+  model <-glm(y ~ exposure + age, data = data, family = binomial)
+  p.value <- summary(model)$coefficients[,4]
+})
+  
 
 ```
 
 
+The proportion of statistically significant effects is your *power*
+```{r}
+
+signficant.experiment <- matrix(data=NA, nrow=3, ncol=sims) 
+  for (i in 1:3){
+    signficant.experiment[i,] <- (pvalues[i,] <= alpha)
+  } 
+  power <-rowMeans(signficant.experiment)
+  power[2]
+
+
+```
+
+
+
+##Caveats 
+
+There is a lot to be desired with this quick example. In this simple example there is no demonstration of how to gauge the impact of a confounder and the subsequent impact on power. Furthermore in designing a study you would need to be able to have realistic scenarios. Future directions would involve building several different types of confounders common in the literature.
 

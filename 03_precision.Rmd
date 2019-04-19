@@ -5,40 +5,63 @@ date: "4/17/2019"
 output: pdf_document
 ---
 
-```{r}
-x1 <- 11:30
-x2 <- runif(20,5,95)
-x3 <- rbinom(20,1,.5)
 
-b0 <- 17
+## We Appreciate Power....
+
+
+However power isn't everything. As some researchers are advocating the moving away from straight hypothesis testing and toward more effect estimation, e.g dropping p-values for confidence intervals.
+
+To plan on precision a common technique is estimate the width of a confidence interval and see how that varies with sample size
+
+The framework of Monte Carlo simulation can easily be adapted to designing studies based on precision. Simply the steps with the only difference being that your test is that you run is a confidence interval
+
+Collect all your confidence intervals and the mean width is your studies precision.
+
+Here is a quick example 
+
+
+
+## Design Your Model
+```{r}
+
+sims <-1000
+N <- 50
+
+x1 <- rnorm(N, 2, 3)
+x2 <- runif(N,5,95)
+x3 <- rbinom(N,1,.5)
+
+b0 <- 20
 b1 <- 0.5
 b2 <- 0.037
 b3 <- -5.2
 sigma <- 1.4
 
-eps <- rnorm(x1,0,sigma)
-y <- b0 + b1*x1  + b2*x2  + b3*x3 + eps
 ```
 
 
+## Simulate Your Model, and Record Your Result
+
+In this instance create a confidence interval for your estimated effect and take the mean width of all simulations
 ```{r}
-  pvalues <- replicate(sims,{
+  ci.widths <- replicate(sims,{
     
     eps <- rnorm(x1,0,sigma)
     y <- b0 + b1*x1  + b2*x2  + b3*x3 + eps
     
-    data <- data.frame(y, time, cluster, linpred, prob , b.trt1 , treatment1 , b.trt2 , treatment2)
-    model <-glmer(y~ treatment1 + treatment2 , data = data, family = binomial)
-    p.value <- summary(model)$coefficients[,4]
+    data <- data.frame(y, x1, x2, x3)
+    model <-lm(y~ x1 + x2 + x3 , data = data)
+    #Only part of the code that needs to change
+    ci.width <- abs(confint(model)[2,1] -confint(model)[2,2])
   })
   
-  signficant.experiment <- matrix(data=NA, nrow=6, ncol=sims) 
-  for (i in 1:6){
-    signficant.experiment[i,] <- (pvalues[i,] <= alpha)
-  } 
-  power <-rowMeans(signficant.experiment)
-  power
-}
+```
+
+
+The mean width of your confidence interval widths
+```{r}
+  study_precision <-mean(ci.widths)
+  study_precision
 
 ```
 
